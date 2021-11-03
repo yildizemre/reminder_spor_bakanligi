@@ -1,0 +1,127 @@
+{%extends "menu.html"%}
+
+{%block header%}
+İletişim & Destek
+{%endblock%}
+
+{%block body%}
+<section class="section is-main-section">
+  <div class="card">
+    <header class="card-header">
+      <p class="card-header-title">
+        <span class="icon"><i class="mdi mdi-ballot"></i></span>
+        İletişim Formu
+      </p>
+    </header>
+    <div class="card-content">
+      <form method="POST" action="/forms" name="form" onsubmit="return validateForm()">
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">İsim Soyisim</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <p class="control is-expanded has-icons-left">
+                <input name="isim_soyisim" class="input" type="text" placeholder="İsim Soyisim Giriniz">
+                <span class="icon is-small is-left"><i class="mdi mdi-account"></i></span>
+              </p>
+            </div>
+            
+          </div>
+        </div>
+        <div class="field is-horizontal">
+          <div class="field-label"></div>
+          <div class="field-body">
+            <div class="field is-expanded">
+              <div class="field has-addons">
+                <p class="control">
+                  <a class="button is-static">
+                    +90
+                  </a>
+                </p>
+                <p class="control is-expanded">
+                  <input  name="telefon" class="input" type="tel" placeholder="Telefon Numaranızı Giriniz">
+                </p>
+              </div>
+              <p class="help">(555 555 5555)</p>
+            </div>
+          </div>
+        </div>
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">Konu</label>
+          </div>
+          <div class="field-body">
+            <div class="field is-narrow">
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select name="konu" >
+                    <option>Teknik Destek</option>
+                    <option>Satın Alım</option>
+                    <option>Şikayet</option>
+                    <option>Diger</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">Başlık</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <div class="control">
+                <input name="baslik" class="input is-danger" type="text" placeholder="Lütfen Başlik Giriniz.">
+              </div>
+              <p class="help is-danger">
+                Bu Alan Gereklidir.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">Mesaj</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <div class="control">
+                <textarea name="mesaj" class="textarea" placeholder="Lütfen mesajınızı giriniz."></textarea>
+              </div>
+            </div>
+            <p class="card-header-title">
+         
+              {{result_mail}}
+            </p>
+          </div>
+          
+        </div>
+     
+        <hr>
+        <div class="field is-horizontal">
+          <div class="field-label">
+            <!-- Left empty for spacing -->
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <div class="field is-grouped">
+                <div class="control">
+                  <button name="button" type="submit" value="value" class="button is-primary">
+                    <span>Gönder</span>
+                  </button>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</section>
+{%endblock%}

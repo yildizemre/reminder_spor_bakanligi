@@ -1,1 +1,1 @@
-# reminder_spor_bakanligi
+# spor_bkn

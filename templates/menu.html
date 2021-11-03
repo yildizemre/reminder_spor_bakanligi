@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" class="has-aside-left has-aside-mobile-transition has-navbar-fixed-top has-aside-expanded">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <script src="http://code.jquery.com/jquery-1.9.1.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+  <!-- Bulma is included -->
+  <link rel="stylesheet" href="/static/css/main.min.css">
+<link rel="stylesheet" href="/static/css/load.css">
+  <!-- Fonts -->
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
+</head>
+<body>
+  
+  <div class="loader-wrapper">
+    <div class="loader"></div>
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+  </div>
+   
+  
+  <div class="container">
+<div id="app">
+  <nav id="navbar-main" class="navbar is-fixed-top">
+    <div class="navbar-brand">
+      <a class="navbar-item is-hidden-desktop jb-aside-mobile-toggle">
+        <span class="icon"><i class="mdi mdi-forwardburger mdi-24px"></i></span>
+      </a>
+      
+    </div>
+    <div class="navbar-brand is-right">
+      <a class="navbar-item is-hidden-desktop jb-navbar-menu-toggle" data-target="navbar-menu">
+        <span class="icon"><i class="mdi mdi-dots-vertical"></i></span>
+      </a>
+    </div>
+    <div class="navbar-menu fadeIn animated faster" id="navbar-menu">
+      <div class="navbar-end">
+        
+        
+        <div class="navbar-item has-dropdown has-dropdown-with-icons has-divider has-user-avatar is-hoverable">
+          <a class="navbar-link is-arrowless">
+            <div class="is-user-avatar">
+              <img src="https://icon-library.com/images/username-icon/username-icon-12.jpg" alt="Emre Yıldız">
+            </div>
+            <div class="is-user-name"><span>{{ session['username'] }}</span></div>
+            <span class="icon"><i class="mdi mdi-chevron-down"></i></span>
+          </a>
+          <div class="navbar-dropdown">
+            <a href="profile" class="navbar-item">
+              <span class="icon"><i class="mdi mdi-account"></i></span>
+              <span>Profil</span>
+            </a>
+            <a href="twitter_setting" class="navbar-item">
+              <span class="icon"><i class="mdi mdi-settings"></i></span>
+              <span>Ayarlar</span>
+            </a>
+            <a href="forms" class="navbar-item">
+              <span class="icon"><i class="mdi mdi-email"></i></span>
+              <span>İletişim</span>
+            </a>
+            <hr class="navbar-divider">
+            <a class="navbar-item" href="logout">
+              <span class="icon"><i class="mdi mdi-logout"></i></span>
+              <span>Log Out</span>
+            </a>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </nav>
+  <aside class="aside is-placed-left is-expanded">
+    <div class="aside-tools">
+      <div class="aside-tools-label">
+        <span><b>Yönetici Paneli</b> </span>
+      </div>
+    </div>
+    <div class="menu is-menu-main">
+      <p class="menu-label">Genel</p>
+      <ul class="menu-list">
+        <li>
+          <a href="/" class="is-active router-link-active has-icon">
+            <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
+            <span class="menu-item-label">Panel</span>
+          </a>
+        </li>
+      </ul>
+      <p class="menu-label">Araçlar</p>
+      <ul class="menu-list">
+        
+       
+       
+       
+        
+        
+      </ul>
+      <p class="menu-label">Hesap</p>
+      <ul class="menu-list">
+        <li>
+          <a href="profile" class="has-icon">
+            <span class="icon"><i class="mdi mdi-account-circle"></i></span>
+            <span class="menu-item-label">Profil Düzenleme</span>
+          </a>
+        </li>
+        
+        <li>
+          <a href="forms" class="has-icon">
+            <span class="icon"><i class="mdi mdi-square-edit-outline"></i></span>
+            <span class="menu-item-label">İletişim & Destek</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </aside>
+  <section class="section is-title-bar">
+    <div class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <ul>
+          
+            
+          </ul>
+        </div>
+      </div>
+      <div class="level-right">
+        <div class="level-item">
+          <div class="buttons is-right">
+            <!-- sağ taraf buton -->
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="hero is-hero-bar">
+    <div class="hero-body">
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item"><h2 class="title">
+            {%block header%}
+            Dashboard
+            {%endblock header%}
+          </h2></div>
+        </div>
+        <div class="level-right" style="display: none;">
+          <div class="level-item"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+{%block body%}
+
+{%endblock body%}
+ 
+
+<div id="sample-modal" class="modal" >
+  <div class="modal-background jb-modal-close"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Oda Seç</p>
+      <button class="delete jb-modal-close" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body" style="height: auto; width:auto">
+     {% block modal_body %}
+     
+     {% endblock %}
+     
+    </section>
+    <footer class="modal-card-foot">
+    </footer>
+  </div>
+  
+</div>
+</div>
+
+<!-- Scripts below are for demo only -->
+<script type="text/javascript" src="/static/js/main.min.js"></script>
+<script type="text/javascript" src="/static/js/table.js"></script>
+{% block script %}
+     
+{% endblock %}
+
+
+
+<!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
+<link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
+</body>
+</html>
