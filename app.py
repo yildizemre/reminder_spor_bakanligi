@@ -1,15 +1,10 @@
-from dns.rdatatype import NULL
-import numpy as np
+from flask import Flask, render_template, url_for, session, request, redirect, current_app
 import mysql.connector
 import smtplib
 from email.mime.text import MIMEText
-from flask import Flask, flash, request, redirect, url_for, current_app,send_from_directory
-from werkzeug.utils import secure_filename
 from datetime import  datetime
-from flask import Flask, render_template, flash, url_for, session, request
 from functools import wraps
 import pandas as pd
-
 from flask_apscheduler import APScheduler
 
 
@@ -59,19 +54,11 @@ database_url = ""
 kayit_tarihi = datetime.now()
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
 
-
-
-
-
 file = []
-
-
 @app.route("/profile", methods=['GET', 'POST'])
 @login_required
 def profile():
-
     twitter_kullanici_adi = session["username"]
-
     try:
 
         mycursor.execute(
@@ -82,10 +69,6 @@ def profile():
             name_surname = i[4]
     except:
         pass
-
-    # username=request.form.get("twitter_user_one") # veritabani sorguları olacak cache'den gelecek giriş yapılan kullanici
-    # user_pass=request.form.get("pass")# veritabani sorguları olacak cache'den gelecek giriş yapılan kullanici
-    # mail=request.form.get("mail")
     if request.method == 'POST':
         mail = session["username"]
 
@@ -105,34 +88,27 @@ def profile():
 
     new_name = request.form.get("name")
     mail = request.form.get("email")
-
     if request.method == 'POST':
         if request.form.get("button") == "value":
-
             try:
                 sql = "UPDATE users SET mail = '" + \
                     str(mail)+"' WHERE name_surname = '" + \
                     str(twitter_kullanici_adi)+"' "
-
                 mycursor.execute(sql)
                 session["username"] = mail
                 twitter_kullanici_adi = session["username"]
                 mydb.commit()
-
             except Exception as e:
                 pass
     return render_template("profile.html", mail=mail, twitter_kullanici_adi=twitter_kullanici_adi)
-
 
 @app.errorhandler(500)
 def page_not_found(error):
     return render_template('500.html'), 500
 
-
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('404.html'), 404
-
 
 @app.route("/", methods=['GET', 'POST'])
 @login_required
@@ -144,7 +120,6 @@ def raporlar():
     try:
         sql = "SELECT *FROM reminder"
         mycursor.execute(sql)
-       
         for i in mycursor:
             hatırlatici_id.append(i[0])
             hatırlatici_mesaj.append(i[1])
@@ -153,7 +128,6 @@ def raporlar():
         print(e)
     if request.method == 'POST':
         if request.form.get("button") == "value":
-            
                 date1 = request.form.get("date1")
                 date2 = request.form.get("date2")
         if request.form.get("button") == "gonder":
@@ -165,8 +139,6 @@ def raporlar():
                 print(mesaj)
                 print(ekleme_date)
                 print(saat_start)
-              
-
                 try:  
                     sql = "INSERT INTO reminder (text,date) VALUES (%s,%s)"
                     val = (mesaj,ekleme_date)
@@ -190,68 +162,63 @@ def raporlar():
                         hatırlatici_date.append(i[2])
                 except Exception as e:
                     print(e)
-    
     return render_template("raporlar.html",hatırlatici_id=hatırlatici_id,hatırlatici_date=hatırlatici_date,hatırlatici_mesaj=hatırlatici_mesaj)
-
 
 def scheduleTask():
     dataframe_array=[]
-    # global id_list,isim_soyisim_list,tc_list,plaka_list,giris_list,cikis_list,yemek_durum_list,resepsiyon_not_list,oda_numarasi_list,date1,date2
     try:
         sql = "SELECT *FROM reminder"
         mycursor.execute(sql)
-       
         for i in mycursor:
            dataframe_array.append([i[1],i[2]])
     except Exception as e:
         print(e)
     dataframe = pd.DataFrame(dataframe_array, columns=['Text','Date'])
     print(dataframe)
-    result_mail=""
     now_time=datetime.now()
     for i in range(len(dataframe)):
         old_time=dataframe['Date'][i]
         new_time=(old_time-now_time)
         diff_minutes = (new_time.days * 24 * 60) + (new_time.seconds/60)
-        # dakika = divmod(new_time.seconds, 60) 
-        # print("kalan_dakika "+str(dakika[0]))
         print(diff_minutes)
-        if (int(diff_minutes))<240 and  (int(diff_minutes))>180:
-        
-            
-            konu = "TESİS HATIRLATMA"
-            baslik = "SPOR BAKANLIĞI TESİSİ"
-            mesaj = dataframe['Text'][i]
-            to = ['yildizemre2@hotmail.com']
-            subject = baslik
-            body = "\n "+konu+"\n = "+mesaj
+        if (int(diff_minutes))<2880 and (int(diff_minutes))>2820:
+            mval=mail(i,dataframe)
+            print('2.gün',mval)
+        elif (int(diff_minutes))<1440 and  (int(diff_minutes))>1380:
+            mval=mail(i,dataframe)
+            print('1.gün',mval)
+        elif (int(diff_minutes))<240 and  (int(diff_minutes))>180:
+            mval=mail(i,dataframe)
+            print('son 3-4 saat',mval)
+        elif (int(diff_minutes))<3 and (int(diff_minutes))>1:
+            mval=mail(i,dataframe)
+            print('son 3-4 saat',mval)
+def mail(i,dataframe):
+    result_mail=""
+    konu = "TESİS HATIRLATMA"
+    baslik = "SPOR BAKANLIĞI TESİSİ"
+    mesaj = dataframe['Text'][i]
+    to = ['yildizemre2@hotmail.com']
+    subject = baslik
+    body = "\n "+konu+"\n = "+mesaj
+    account = 'ali.gkky196@gmail.com'
+    password = 'Ali19671570'
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.login(account, password)
+    mail = MIMEText(body, 'html', 'utf-8')
+    mail['From'] = account
+    mail['Subject'] = subject
+    mail['To'] = ','.join(to)
+    mail = mail.as_string()
 
-            account = 'ali.gkky196@gmail.com'
-            password = 'Ali19671570'
-
-            server = smtplib.SMTP('smtp.gmail.com', 587)
-
-            server.ehlo()
-
-            server.starttls()
-
-            server.login(account, password)
-            mail = MIMEText(body, 'html', 'utf-8')
-            mail['From'] = account
-            mail['Subject'] = subject
-            mail['To'] = ','.join(to)
-            mail = mail.as_string()
-
-            try:
-                server.sendmail(account, to, mail)
-                result_mail = ('Mail gönderimi başarılı')
-
-            except:
-                result_mail = ('Mail gönderimi başarısız')
-           
-
-        
-
+    try:
+        server.sendmail(account, to, mail)
+        result_mail = ('Mail gönderimi başarılı')
+    except:
+        result_mail = ('Mail gönderimi başarısız')        
+    return result_mail
 @app.route("/forms", methods=['GET', 'POST'])
 @login_required
 def forms():
@@ -268,27 +235,20 @@ def forms():
             to = ['yildizemre2@hotmail.com', 'yildizemre2@gmail.com']
             subject = baslik
             body = name_suname+"n"+telefon+" "+konu+"\n"+mesaj
-
             account = 'ali.gkky196@gmail.com'
             password = 'Ali19671570'
-
             server = smtplib.SMTP('smtp.gmail.com', 587)
-
             server.ehlo()
-
             server.starttls()
-
             server.login(account, password)
             mail = MIMEText(body, 'html', 'utf-8')
             mail['From'] = account
             mail['Subject'] = subject
             mail['To'] = ','.join(to)
             mail = mail.as_string()
-
             try:
                 server.sendmail(account, to, mail)
                 result_mail = ('Mail gönderimi başarılı')
-
             except:
                 result_mail = ('Mail gönderimi başarısız')
     return render_template("forms.html", result_mail=result_mail, twitter_kullanici_adi=twitter_kullanici_adi)
@@ -310,36 +270,23 @@ def login():
             session["logged_in"] = True
 
             return redirect(url_for("raporlar"))
-
         else:
-
             return render_template("login.html")
-
     return render_template("login.html")
-
-
-
-
-
 
 @app.route("/logout")
 def logout():
     session.clear()
-
     return redirect(url_for("login"))
-
 
 @app.route("/delete/<id>")
 def delete(id):
     try:
         mycursor.execute("delete from reminder where id ="+id+" ")
         mydb.commit()
-
     except Exception as e:
         pass
-
     return redirect(url_for("raporlar"))
-
 
 if __name__ == "__main__":
     scheduler.add_job(id = 'Scheduled Task', func=scheduleTask, trigger="interval", minutes=1)
