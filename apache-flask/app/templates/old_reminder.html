@@ -1,0 +1,67 @@
+{%extends "menu.html"%}
+
+{%block header%}
+Geçmiş Bildirimler
+
+{%endblock%}
+
+{%block body%}
+  </section>
+  <section class="section is-main-section">
+  <div class="notification is-info">
+    <div class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <div>
+            <span class="icon"><i class="mdi mdi-bell-ring"></i></span>
+            <b>ARA</b>
+          </div>
+          <div class="card-header-title is-right">
+            <input id="myInput" class="input" type="input">
+            <span class="counter"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card has-table">
+    <header class="card-header">
+      <p class="card-header-title">
+        <span class="icon"><i class="mdi mdi-ballot"></i></span>
+        Geçmiş Bildirimler 
+      </p>
+    </header>
+    <div class="card-content">
+      <div class="b-table has-pagination">
+        <div class="table-wrapper has-mobile-cards">
+          <table id="data" class="table is-fullwidth is-striped is-hoverable is-fullwidth">
+            <tr>
+            <th>Text</th>
+            <th>Tarih</th>
+          </tr>
+            <tbody id="myTable">
+                {% for i in range (hatırlatici_date|length) %}
+                <tr>
+                   <td>{{hatırlatici_mesaj[i]}}</td>
+                  
+
+                   <td>{{hatırlatici_date[i]}}</td>
+                 
+                  <td class="is-actions-cell">
+                    <div class="buttons is-right">
+                      <button  type="button" ><a href="{{url_for("delete",id=hatırlatici_id[i],who='1')}}"><span class="icon"><i class="mdi mdi-delete-empty"></i></span></a></button>
+                    </div>
+                  </td>
+                 
+                   
+                </tr>
+               {%endfor%}
+           </tbody>
+
+          </table>
+        </div>
+        
+      </div>
+    </div>
+</section>
+{%endblock%}
